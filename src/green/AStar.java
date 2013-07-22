@@ -19,8 +19,8 @@ public class AStar {
 	}
 	
 	public Double euclideanDist(Node current, Node end){
-		int X = Math.abs(current.getCoord()[0]-end.getCoord()[0]);
-		int Y = Math.abs(current.getCoord()[1]-end.getCoord()[1]);
+		int X = current.getCoord()[0]-end.getCoord()[0];
+		int Y = current.getCoord()[1]-end.getCoord()[1];
 		
 		return Math.sqrt(X^2+Y^2);
 	}
@@ -34,8 +34,8 @@ public class AStar {
 			for(int j=-1;j<=1;j++){
 				if(!(i==0&&j==0) && (X+i)<map.length && (X+i)>=0 && (Y+j)<map[0].length && (Y+j)>=0){
 					Node insert = map[X+i][Y+j];
-					if(i !=0 || j != 0)
-						insert.setG(10);
+					if(i !=0 && j != 0)
+						insert.setG(14);
 					else
 						insert.setG(10);
 					neighbors.add(insert);
@@ -60,6 +60,13 @@ public class AStar {
 		}
 		
 		return convMap;
+	}
+	
+	public int manhattanDist(Node current, Node end){
+		int X = Math.abs(current.getCoord()[0]-end.getCoord()[0]);
+		int Y = Math.abs(current.getCoord()[1]-end.getCoord()[1]);
+		
+		return X+Y;
 	}
 	
 	public ArrayList<Node> shortestPath(Node[][] map, Node start, Node end){
@@ -90,7 +97,7 @@ public class AStar {
 				if(open.indexOf(i)==-1 || tentativeG < i.getG()){
 					i.setParent(current);
 					i.setG(tentativeG);
-					i.setF((int)Math.round(tentativeG + euclideanDist(i,end)));
+					i.setF((int)Math.round(tentativeG + manhattanDist(i,end)));
 					if(open.indexOf(i)==-1)
 						open.add(i);
 				}
@@ -117,10 +124,10 @@ public class AStar {
 						{0,0,0,1,0},
 						{0,0,1,1,0},
 						{0,0,1,0,0},
-						{0,0,1,0,0}};
+						{0,0,0,0,0}};
 		
 		int[] start = {1,2};
-		int[] end 	= {4,3};
+		int[] end 	= {4,4};
 		
 		AStar as = new AStar();
 		Node[][] convMap = as.injestMap(map);
